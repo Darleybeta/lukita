@@ -1,3 +1,16 @@
 from django.db import models
+from negocios.models import Negocio
 
-# Create your models here.
+class Usuario(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    nombre = models.TextField()
+    correo = models.TextField(blank=True, null=True)
+    telefono = models.TextField(blank=True, null=True)
+    rol = models.TextField(blank=True, null=True)
+    contrasena = models.TextField(blank=True, null=True)
+    negocio = models.ForeignKey(Negocio, models.DO_NOTHING, blank=True, null=True)
+    fecha_registro = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'usuarios'
