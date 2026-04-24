@@ -6,9 +6,24 @@ from django.contrib.auth.hashers import make_password, check_password
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import Usuario
 
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError
+
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
+from rest_framework_simplejwt.tokens import UntypedToken
+
+class CustomJWTAuthentication(JWTAuthentication):
+    def get_user(self, validated_token):
+        try:
+            user_id = validated_token['user_id']
+            usuario = Usuario.objects.get(id=user_id)
+            return usuario
+        except Usuario.DoesNotExist:
+            raise InvalidToken('User not found')
 def get_tokens_for_user(usuario):
     refresh = RefreshToken()
-    refresh['id'] = usuario.id
+    refresh['user_id'] = usuario.id  # ← cambia 'id' por 'user_id'
     refresh['correo'] = usuario.correo
     refresh['rol'] = usuario.rol
     refresh['negocio_id'] = usuario.negocio_id
@@ -94,3 +109,15 @@ def registro(request):
             'rol': usuario.rol
         }
     }, status=status.HTTP_201_CREATED)
+@api_view(['GET'])
+def listar_usuarios(request):
+    negocio_id = request.query_params.get('negocio_id')
+    if negocio_id:
+        usuarios = Usuario.objects.filter(negocio_id=negocio_id).values(
+            'id', 'nombre', 'correo', 'telefono', 'rol'
+        )
+    else:
+        usuarios = Usuario.objects.all().values(
+            'id', 'nombre', 'correo', 'telefono', 'rol'
+        )
+    return Response(list(usuarios))
