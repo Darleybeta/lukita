@@ -14,3 +14,15 @@ class Usuario(models.Model):
     class Meta:
         managed = False
         db_table = 'usuarios'
+
+    @property
+    def is_authenticated(self):
+        return True
+
+    @property
+    def is_anonymous(self):
+        return False
+
+    @property
+    def is_active(self):
+        return True

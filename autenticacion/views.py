@@ -91,11 +91,14 @@ def registro(request):
             status=status.HTTP_400_BAD_REQUEST
         )
 
+    negocio_id = request.data.get('negocio_id')
+
     usuario = Usuario.objects.create(
         nombre=nombre,
         correo=correo,
         contrasena=make_password(password),
-        rol=rol
+        rol=rol,
+        negocio_id=negocio_id
     )
 
     tokens = get_tokens_for_user(usuario)
@@ -121,3 +124,23 @@ def listar_usuarios(request):
             'id', 'nombre', 'correo', 'telefono', 'rol'
         )
     return Response(list(usuarios))
+@api_view(['DELETE', 'PATCH'])
+def gestionar_usuario(request, usuario_id):
+    try:
+        usuario = Usuario.objects.get(id=usuario_id)
+    except Usuario.DoesNotExist:
+        return Response({'error': 'Usuario no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'DELETE':
+        usuario.delete()
+        return Response({'mensaje': 'Usuario eliminado'}, status=status.HTTP_200_OK)
+
+    if request.method == 'PATCH':
+        if 'nombre' in request.data:
+            usuario.nombre = request.data['nombre']
+        if 'correo' in request.data:
+            usuario.correo = request.data['correo']
+        if 'rol' in request.data:
+            usuario.rol = request.data['rol']
+        usuario.save()
+        return Response({'id': usuario.id, 'nombre': usuario.nombre, 'correo': usuario.correo, 'rol': usuario.rol})
