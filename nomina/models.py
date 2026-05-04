@@ -6,6 +6,9 @@ class Nomina(models.Model):
     empleado_nombre = models.TextField()
     cargo = models.TextField(blank=True, null=True)
     salario = models.DecimalField(max_digits=15, decimal_places=2, blank=True, null=True)
+    horas_extras = models.DecimalField(max_digits=15, decimal_places=2, blank=True, null=True, default=0)
+    recargos = models.DecimalField(max_digits=15, decimal_places=2, blank=True, null=True, default=0)
+    deducciones = models.DecimalField(max_digits=15, decimal_places=2, blank=True, null=True, default=0)
     mes = models.TextField(blank=True, null=True)
     fecha_pago = models.DateTimeField(blank=True, null=True)
     estado = models.TextField(blank=True, null=True)
@@ -14,7 +17,6 @@ class Nomina(models.Model):
     class Meta:
         managed = False
         db_table = 'nomina'
-
 class NominaConcepto(models.Model):
     id = models.BigAutoField(primary_key=True)
     nomina = models.ForeignKey(Nomina, models.DO_NOTHING)

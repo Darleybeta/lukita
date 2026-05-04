@@ -20,12 +20,12 @@ class NominaViewSet(viewsets.ModelViewSet):
         nomina.estado = 'pagado'
         nomina.save()
         Transaccion.objects.create(
-            monto=nomina.salario,
-            tipo='egreso',
-            categoria='nomina',
-            descripcion=f'Pago nómina {nomina.empleado_nombre} - {nomina.mes}',
-            negocio_id=nomina.negocio_id
-        )
+        monto=nomina.salario,
+        tipo='gasto',  # ← cambiar egreso por gasto
+        categoria='nomina',
+        descripcion=f'Pago nómina {nomina.empleado_nombre} - {nomina.mes}',
+        negocio_id=nomina.negocio_id
+)
         return Response({'mensaje': 'Nómina pagada exitosamente'})
 
 class NominaConceptoViewSet(viewsets.ModelViewSet):
