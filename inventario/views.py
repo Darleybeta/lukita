@@ -1,3 +1,5 @@
+from datetime import timezone
+
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -41,7 +43,8 @@ class VentaViewSet(viewsets.ModelViewSet):
             categoria='venta',
             descripcion=f'Venta a {venta.cliente_nombre}',
             negocio_id=venta.negocio_id,
-            usuario_id=venta.usuario_id
+            usuario_id=venta.usuario_id,
+            fecha=timezone.now() 
         )
 
 class VentaDetalleViewSet(viewsets.ModelViewSet):

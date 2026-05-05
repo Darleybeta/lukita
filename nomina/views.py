@@ -24,7 +24,8 @@ class NominaViewSet(viewsets.ModelViewSet):
         tipo='gasto',  # ← cambiar egreso por gasto
         categoria='nomina',
         descripcion=f'Pago nómina {nomina.empleado_nombre} - {nomina.mes}',
-        negocio_id=nomina.negocio_id
+        negocio_id=nomina.negocio_id,
+        fecha=timezone.now() 
 )
         return Response({'mensaje': 'Nómina pagada exitosamente'})
 
